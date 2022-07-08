@@ -9,12 +9,20 @@ while True:
     _, frame = cap.read()
     frame = cv2.flip(frame, 1)
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    frame_height, frame_width, _ = frame.shape
     output = hand_detector.process(rgb_frame)
     hands = output.multi_hand_landmarks
     # print(hands)
     if hands:
         for hand in hands:
             drawing_utils.draw_landmarks(frame, hand)
+            landmarks = hand.landmark
+            for id, landmark in enumerate(landmarks):
+                x = int(landmark.x * frame_width)
+                y = int(landmark.y * frame_height)
+                # print(x, y)
+                if id == 8:
+                    cv2.circle(img=frame, center=(x, y), radius=10, color=(0, 255, 0))
 
     cv2.imshow('Virtual Mouse', frame)
     cv2.waitKey(1)
